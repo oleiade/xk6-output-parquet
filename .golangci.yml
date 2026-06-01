@@ -1,0 +1,42 @@
+# Minimal linter config aligned with the Grafana xk6-output-* family.
+#
+# The production extensions (xk6-output-prometheus-remote, xk6-output-influxdb)
+# download k6 core's .golangci.yml at lint time rather than checking one in.
+# That is great for staying in lockstep with k6, but it does add a curl step
+# to every CI lint. For a fresh extension, this minimal config is enough to
+# catch the obvious bugs; switch to the "download from k6 core" approach
+# (see the Makefile target in xk6-output-influxdb) when you start
+# upstreaming changes.
+
+run:
+  timeout: 5m
+
+linters:
+  enable:
+    - errcheck
+    - gosimple
+    - govet
+    - ineffassign
+    - staticcheck
+    - unused
+    - bodyclose
+    - gofmt
+    - goimports
+    - misspell
+    - revive
+    - unconvert
+    - unparam
+
+linters-settings:
+  revive:
+    rules:
+      - name: exported
+        arguments: ["disableStutteringCheck"]
+
+issues:
+  exclude-use-default: false
+  exclude-rules:
+    - path: _test\.go
+      linters:
+        - unparam
+        - errcheck

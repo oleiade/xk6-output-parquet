@@ -1,0 +1,33 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-go@v5
+        with:
+          go-version: "1.23"
+          cache: true
+      - name: Install xk6
+        run: go install go.k6.io/xk6/cmd/xk6@latest
+      - name: Build k6 with this extension
+        run: xk6 build --with $(go list -m)=. --output ./k6
+      - name: Package
+        run: |
+          mkdir -p dist
+          tar -czvf "dist/k6-${{ github.ref_name }}-linux-amd64.tar.gz" k6
+      - uses: softprops/action-gh-release@v2
+        with:
+          files: dist/*
+          generate_release_notes: true

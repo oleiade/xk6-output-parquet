@@ -1,0 +1,21 @@
+# Demo compose file. Replace the `parquet` service with your real destination
+# (e.g. an influxdb, prometheus, otel-collector, mock-server) and uncomment the
+# `k6` service to run a sample test end-to-end.
+
+services:
+  parquet:
+    image: traefik/whoami:latest
+    ports:
+      - "9999:80"
+
+  # Uncomment after `make build` to run a sample test through the extension.
+  # k6:
+  #   build:
+  #     context: .
+  #     dockerfile: Dockerfile
+  #   depends_on: [parquet]
+  #   environment:
+  #     K6_PARQUET_URL: http://parquet:80
+  #   volumes:
+  #     - ./samples:/samples
+  #   command: ["run", "--out", "xk6-parquet", "/samples/script.js"]

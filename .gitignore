@@ -1,0 +1,23 @@
+# k6 binary produced by `xk6 build`
+/k6
+
+# Coverage and build artefacts
+coverage.out
+coverage.txt
+/build/
+
+# Local k6 run outputs
+*.parquet
+
+# IDE / editor noise
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS noise
+.DS_Store
+
+# Local override files
+.env
+.env.local
