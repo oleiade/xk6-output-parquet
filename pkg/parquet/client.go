@@ -24,7 +24,7 @@ import (
 	"github.com/parquet-go/parquet-go/compress/uncompressed"
 	"github.com/parquet-go/parquet-go/compress/zstd"
 	"github.com/sirupsen/logrus"
-	"go.k6.io/k6/metrics"
+	"go.k6.io/k6/v2/metrics"
 )
 
 // Client wraps the open Parquet file and writer.

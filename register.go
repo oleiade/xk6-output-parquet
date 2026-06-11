@@ -7,7 +7,7 @@ package parquet
 
 import (
 	"github.com/grafana/xk6-output-parquet/pkg/parquet"
-	"go.k6.io/k6/output"
+	"go.k6.io/k6/v2/output"
 )
 
 func init() {

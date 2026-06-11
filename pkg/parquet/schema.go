@@ -21,7 +21,7 @@ package parquet
 import (
 	"strconv"
 
-	"go.k6.io/k6/metrics"
+	"go.k6.io/k6/v2/metrics"
 )
 
 // SchemaVersion is the on-disk schema version for the Parquet file. Bump this

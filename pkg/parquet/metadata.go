@@ -16,10 +16,10 @@ import (
 	"strconv"
 	"time"
 
-	"go.k6.io/k6/lib"
+	"go.k6.io/k6/v2/lib"
 )
 
-// k6Version returns the version of the linked go.k6.io/k6 module, or
+// k6Version returns the version of the linked go.k6.io/k6/v2 module, or
 // "unknown" if it can't be resolved from the build info (e.g. tests, or a
 // binary built without k6 as a dependency).
 func k6Version() string {
@@ -28,7 +28,7 @@ func k6Version() string {
 		return "unknown"
 	}
 	for _, dep := range info.Deps {
-		if dep.Path == "go.k6.io/k6" {
+		if dep.Path == "go.k6.io/k6/v2" {
 			return dep.Version
 		}
 	}
