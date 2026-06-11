@@ -30,6 +30,12 @@ import (
 	"go.k6.io/k6/v2/output"
 )
 
+// OutputName is the human-readable name of this output, used in log fields and
+// in the `k6 run` banner. The CLI registration name (passed to
+// output.RegisterExtension and used as `-o <name>=<path>`) is separate; see
+// register.go.
+const OutputName = "xk6-output-parquet"
+
 // Output is the xk6-output-parquet extension.
 type Output struct {
 	output.SampleBuffer
@@ -63,14 +69,14 @@ func New(params output.Params) (output.Output, error) {
 		config:        cfg,
 		scriptPath:    scriptPath,
 		scriptOptions: params.ScriptOptions,
-		logger:        params.Logger,
+		logger:        params.Logger.WithField("output", OutputName),
 	}, nil
 }
 
 // Description is shown by `k6 run` in its banner. Include the destination
 // path so users can verify they're writing to the right file.
 func (o *Output) Description() string {
-	return fmt.Sprintf("xk6-output-parquet (%s)", o.config.FilePath.String)
+	return fmt.Sprintf("%s (%s)", OutputName, o.config.FilePath.String)
 }
 
 // Start builds the run metadata, opens the output file, and starts the
