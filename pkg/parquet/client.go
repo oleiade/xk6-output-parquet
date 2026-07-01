@@ -72,15 +72,16 @@ func NewClient(cfg Config, runMeta RunMetadata, logger logrus.FieldLogger) (*Cli
 	}, nil
 }
 
-// Send flattens a batch of k6 sample containers into Parquet rows and writes
-// them. The writer buffers rows internally; row groups are flushed when
-// MaxRowsPerRowGroup is reached (or on Close).
+// Send flattens a batch of k6 sample containers into Parquet rows, writes
+// them, and returns the number of rows written. The writer buffers rows
+// internally; row groups are flushed when MaxRowsPerRowGroup is reached (or on
+// Close).
 //
 // This is called from a single goroutine (the PeriodicFlusher); concurrent
 // callers must serialise externally.
-func (c *Client) Send(containers []metrics.SampleContainer) error {
+func (c *Client) Send(containers []metrics.SampleContainer) (int, error) {
 	if len(containers) == 0 {
-		return nil
+		return 0, nil
 	}
 
 	// Pre-size a single allocation. Most containers carry a handful of samples;
@@ -92,15 +93,15 @@ func (c *Client) Send(containers []metrics.SampleContainer) error {
 		}
 	}
 	if len(rows) == 0 {
-		return nil
+		return 0, nil
 	}
 
 	n, err := c.writer.Write(rows)
 	if err != nil {
-		return fmt.Errorf("writing %d rows to parquet: %w", len(rows), err)
+		return n, fmt.Errorf("writing %d rows to parquet: %w", len(rows), err)
 	}
 	c.rows += int64(n)
-	return nil
+	return n, nil
 }
 
 // RowsWritten returns the running total of rows written through this client.

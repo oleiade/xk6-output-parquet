@@ -94,11 +94,11 @@ type RunMetadata struct {
 // newRunMetadata builds a RunMetadata from a (possibly partial) k6 output.Params.
 // hostname is passed in so the caller controls the source — we don't want to
 // reach out to os.Hostname() from deep in this package without context.
-func newRunMetadata(runID, runName, hostname string, scriptPath string, opts lib.Options, cfg Config) RunMetadata {
+func newRunMetadata(runID, hostname, scriptPath string, opts lib.Options, cfg Config) RunMetadata {
 	m := RunMetadata{
 		SchemaVersion: SchemaVersion,
 		TestRunID:     runID,
-		TestRunName:   runName,
+		TestRunName:   cfg.TestRunName.String,
 		K6Version:     k6Version(),
 		GoVersion:     runtime.Version(),
 		OS:            runtime.GOOS,

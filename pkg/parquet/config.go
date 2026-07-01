@@ -48,6 +48,7 @@ const (
 // converts user input into one of these.
 type CompressionCodec string
 
+// Supported Parquet compression codecs.
 const (
 	CompressionZSTD         CompressionCodec = "zstd"
 	CompressionSnappy       CompressionCodec = "snappy"

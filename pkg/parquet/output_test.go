@@ -231,23 +231,3 @@ func TestStop_BeforeStart_NoOps(t *testing.T) {
 	_, statErr := os.Stat(path)
 	assert.True(t, os.IsNotExist(statErr), "Stop before Start must not create the output file")
 }
-
-func TestCountSamples(t *testing.T) {
-	t.Parallel()
-
-	registry := metrics.NewRegistry()
-	m, err := registry.NewMetric("test_counter", metrics.Counter)
-	require.NoError(t, err)
-
-	containers := []metrics.SampleContainer{
-		metrics.Samples([]metrics.Sample{
-			{TimeSeries: metrics.TimeSeries{Metric: m}, Value: 1},
-			{TimeSeries: metrics.TimeSeries{Metric: m}, Value: 2},
-		}),
-		metrics.Samples([]metrics.Sample{
-			{TimeSeries: metrics.TimeSeries{Metric: m}, Value: 3},
-		}),
-	}
-	assert.Equal(t, 3, countSamples(containers))
-	assert.Equal(t, 0, countSamples(nil))
-}

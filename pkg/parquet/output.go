@@ -26,7 +26,6 @@ import (
 	"github.com/google/uuid"
 	"github.com/sirupsen/logrus"
 	"go.k6.io/k6/v2/lib"
-	"go.k6.io/k6/v2/metrics"
 	"go.k6.io/k6/v2/output"
 )
 
@@ -88,14 +87,7 @@ func (o *Output) Start() error {
 	}
 	hostname, _ := os.Hostname() // best-effort; empty hostname is fine
 
-	runMeta := newRunMetadata(
-		runID,
-		o.config.TestRunName.String,
-		hostname,
-		o.scriptPath,
-		o.scriptOptions,
-		o.config,
-	)
+	runMeta := newRunMetadata(runID, hostname, o.scriptPath, o.scriptOptions, o.config)
 
 	client, err := NewClient(o.config, runMeta, o.logger)
 	if err != nil {
@@ -172,26 +164,16 @@ func (o *Output) flushMetrics(client *Client) {
 		return
 	}
 
-	count := countSamples(samples)
-	if err := client.Send(samples); err != nil {
+	n, err := client.Send(samples)
+	if err != nil {
 		o.logger.
 			WithError(err).
-			WithField("samples", count).
 			WithField("containers", len(samples)).
 			Error("Failed to write parquet batch")
 		return
 	}
 	o.logger.
-		WithField("samples", count).
+		WithField("samples", n).
 		WithField("containers", len(samples)).
 		Debug("Wrote parquet batch")
-}
-
-// countSamples returns the total number of metric samples across all containers.
-func countSamples(containers []metrics.SampleContainer) int {
-	var n int
-	for _, c := range containers {
-		n += len(c.GetSamples())
-	}
-	return n
 }

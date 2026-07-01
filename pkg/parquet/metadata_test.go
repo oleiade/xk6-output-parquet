@@ -73,7 +73,7 @@ func TestNewRunMetadata_FooterCarriesNoSecrets(t *testing.T) {
 	cfg.Compression = null.StringFrom("zstd")
 	cfg.RowGroupSize = null.IntFrom(100)
 
-	m := newRunMetadata("run-id", "", "", "", opts, cfg)
+	m := newRunMetadata("run-id", "", "", opts, cfg)
 	for k, v := range m.KeyValueMetadata() {
 		assert.False(t, strings.Contains(v, "DO_NOT_LEAK"), "%s must not leak", k)
 	}
